@@ -1,0 +1,15 @@
+# Ignore Gradle build outputs
+build/
+.gradle/
+
+# Ignore local config and IDE files
+.gradle/
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Ignore OS files
+.DS_Store
+**/Thumbs.db
