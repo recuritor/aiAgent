@@ -18,14 +18,10 @@ public class HelloController {
     public Map<String, String> generate(@RequestBody Map<String, String> body) {
 
         String prompt = body.get("prompt");
+        Map<String, String> response = new HashMap<>();
 
-            // TEMP fake response (for testing)
-                Map<String, String> response = new HashMap<>();
-
-                    response.put("html", "<h1>Hello AI Website</h1>");
-                        response.put("css", "body { background:black; color:white; text-align:center; }");
-                            response.put("js", "console.log('AI Loaded');");
-
-                                return response;
-                                }
+        response.put("html", "<h1>Hello AI Website</h1>");
+        response.put("css", "body { background:black; color:white; text-align:center; }");
+        return response;
+    }
 }
