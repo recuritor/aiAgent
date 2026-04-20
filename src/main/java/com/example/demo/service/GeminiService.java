@@ -40,6 +40,7 @@ public class GeminiService {
                     + "}]"
                     + "}]"
                     + "}";
+            System.out.println(" Request Body = " + requestBody);
 
             // STEP 3: Create HTTP request
             HttpRequest request = HttpRequest.newBuilder()
