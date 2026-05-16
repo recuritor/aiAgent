@@ -36,7 +36,7 @@ public class GeminiService {
                 GenerateContentResponse response =
                         client.models.generateContent(
                         "gemini-3-flash-preview",
-                        requestBody,
+                        fullPrompt,
                         null);
                 
                 String result = response.text();
