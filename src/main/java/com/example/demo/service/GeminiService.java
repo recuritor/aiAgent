@@ -10,6 +10,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import com.google.genai.Client;
+import com.google.genai.types.GenerateContentResponse;
+
 @Service
 public class GeminiService {
 
@@ -18,66 +21,34 @@ public class GeminiService {
 
     public String generateWebsite(String prompt) {
         try {
-            // STEP 1: Build prompt
-            String fullPrompt =
-                    "You are an expert frontend developer.\n\n" +
-                    "Rules:\n" +
-                    "- Generate modern UI\n" +
-                    "- Use Tailwind CSS\n" +
-                    "- Fully responsive\n" +
-                    "- Output ONLY code (no explanation)\n\n" +
-                    "User request:\n" +
-                    prompt;
+                String fullPrompt =
+                        "You are an expert frontend developer.\n\n" +
+                        "Rules:\n" +
+                        "- Generate modern UI\n" +
+                        "- Use Tailwind CSS\n" +
+                        "- Fully responsive\n" +
+                        "- Output ONLY code (no explanation)\n\n" +
+                        "User request:\n" +
+                        prompt;
+                
+                Client client = new Client();
 
-            // Escape quotes for JSON safety
-            fullPrompt = fullPrompt.replace("\"", "\\\"");
+                GenerateContentResponse response =
+                        client.models.generateContent(
+                        "gemini-3-flash-preview",
+                        requestBody,
+                        null);
+                
+                String result = response.text();
 
-            // STEP 2: Build request body (safe for mobile)
-            String requestBody = "{"
-                    + "\"contents\": [{"
-                    + "\"parts\": [{"
-                    + "\"text\": \"" + fullPrompt + "\""
-                    + "}]"
-                    + "}]"
-                    + "}";
-            System.out.println(" Request Body = " + requestBody);
+                if (result != null) {
+                result = result.replaceAll("```html", "")
+                                .replaceAll("```", "");
+                }
 
-            // STEP 3: Create HTTP request
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(
-                            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-            System.out.println("request = " + request);
-
-            // STEP 4: Send request
-            HttpClient client = HttpClient.newHttpClient();
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("response = " + response);
-
-            // STEP 5: Parse response JSON
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(response.body());
-            System.out.println("JsonNode = " + root);
-
-            String result = root
-                    .path("candidates")
-                    .get(0)
-                    .path("content")
-                    .path("parts")
-                    .get(0)
-                    .path("text")
-                    .asText();
-
-            // STEP 6: Clean markdown (optional but useful)
-            result = result.replaceAll("```html", "")
-                           .replaceAll("```", "");
-
-            return result;
-
-        } catch (Exception e) {
+                return result != null ? result : "No response generated";
+        } 
+        catch (Exception e) {
             e.printStackTrace();
             return "Error generating AI response";
         }
