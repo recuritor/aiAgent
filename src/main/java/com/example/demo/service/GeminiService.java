@@ -49,15 +49,18 @@ public class GeminiService {
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                     .build();
+            System.out.println("request = " + request);
 
             // STEP 4: Send request
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response =
                     client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("response = " + response);
 
             // STEP 5: Parse response JSON
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.body());
+            System.out.println("JsonNode = " + root);
 
             String result = root
                     .path("candidates")
